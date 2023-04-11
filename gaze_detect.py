@@ -4,10 +4,15 @@ import dlib
 from math import hypot  # X-Y Plant Distence
 #import pyglet   # wav
 import time
+import os
+import threading
 
+from Ques_Window import windows
+
+Question_path = os.path.abspath("Ques_Window.py")
 cap = cv2.VideoCapture(0)
 frames = 0
-frames_to_blink = 6
+frames_to_blink = 3
 
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
@@ -47,6 +52,11 @@ def eyes_contour_points(facial_landmarks):
 
 if __name__ == "__main__":
 
+    Questions = windows()
+
+    Que_t = threading.Thread(target=Questions.Control("start"))
+    Que_t.start()
+
     while True:
 
         ret, frame = cap.read()
@@ -85,6 +95,11 @@ if __name__ == "__main__":
                 if blinking_frames == frames_to_blink:
                     
                     print("Blinked!!!!!!!!!!!!!!!!!!!!!")
+
+                    Questions.blinked = True
+                    result = Questions.result
+
+                    print(result)
                     #sound.play()
                     select_keyboard_menu = True
                     # time.sleep(1)

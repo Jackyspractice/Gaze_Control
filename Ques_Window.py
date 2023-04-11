@@ -16,6 +16,11 @@ class windows:
     font = None
     images = []
 
+    def __init__(self, blinked = False, result = None):
+            
+            self.blinked = blinked
+            self.result = result
+
     def Basic_Setting(self):
 
         global question, font
@@ -109,6 +114,8 @@ class windows:
         cv2.putText(question, Q_List[i], (picture[i] - shift[i], 200), font, 3, (0, 255, 0), 5)
     
     def Control(self, signal):
+
+        global blinked
         
         print("Blink Eyes to stop or Enter ESC to stop")
         self = windows()
@@ -125,10 +132,14 @@ class windows:
             cv2.imshow("Questions", question)
 
             key = cv2.waitKey(1)
-            if key == 27:
+            if self.blinked == True:
                 stop_pivot = pivot - 1
                 #print("You choose: ", Q_List[stop_pivot])
-                control = "stop"
+                #control = "stop"
+                cv2.destroyAllWindows()
+                self.result = Q_List[stop_pivot]
+                time.sleep(0.5)
+                return True, Q_List[stop_pivot]
 
             print(Q_List[pivot], end = "\r")
         
@@ -138,8 +149,8 @@ class windows:
                 pivot += 1
         
         print("Windows stop")
-        cv2.destroyAllWindows()
-        return Q_List[stop_pivot]
+        
+        return False, "unexpected"
 
 if __name__ == "__main__":
 
